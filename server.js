@@ -47,9 +47,13 @@ const server = http.createServer(async (req, res) => {
     const data = await fs.readFile(filePath)
     res.end(data)
   } catch (err) {
-    res.statusCode = 500
-    res.setHeader("Content-Type", "text/plain")
-    res.end(`Server Error: ${err.code}!`)
+    if (err.code === "ENOENT") {
+      res.statusCode = 404
+      res.end("File Not Found")
+    } else {
+      res.statusCode = 500
+      res.end(`Server Error: ${err.code}`)
+    }
   }
 })
 
